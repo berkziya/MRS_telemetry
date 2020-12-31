@@ -2,51 +2,65 @@
 #include <SPI.h>
 #include <LoRa.h>
 
-ValueReceiver<1>receiver;
+ValueReceiver<1> receiver;
 ValueReceiver<2> sender;
 
 int g_packageNo;
 int abortte = 0;
-int snrValue, rssiValue;
+int snrValue = 0, rssiValue = 0;
 
-typedef struct {
+// the package
+typedef struct
+{
   int16_t packageNo;
   float randomBullshitGo;
   String mamma;
-}
-LoRa_Package;
+} LoRa_Package;
 
 LoRa_Package data;
 
-void setup() {
-  Serial.begin(19200);
-  
-  if (!LoRa.begin(433E6)) {
+void setup()
+{
+  // LoRa init.
+  if (!LoRa.begin(433E6))
+  {
     while (1);
   }
-  
   LoRa.receive();
-  LoRa.onReceive(weGotPackage);
-  
-  receiver.observe(abortte);
+  LoRa.onReceive(onReceive);
 
+  // Processing connection init.
+  Serial.begin(19200);
+  receiver.observe(abortte);
   sender.observe(g_packageNo);
   sender.observe(rssiValue);
   sender.observe(snrValue);
 }
 
-void loop() {
+void loop()
+{
   receiver.sync();
-  
-  rssiValue = int(LoRa.rssi()*10);
-  
+  if (abortte == 1) // Abort sequence
+  {
+    while (1)
+    {
+      LoRa.beginPacket();
+      LoRa.write("abrt");
+      LoRa.endPacket();
+      delay(100);
+    }
+  }
+
   sender.sync();
 }
 
-void weGotPackage(int packageSize) {  
-  if (packageSize) {
-    LoRa.readBytes((uint8_t *)&data, packageSize);
+// When a package is received
+void onReceive(int packageSize)
+{
+  if (packageSize)
+  {
+    LoRa.readBytes((uint8_t *)&data, sizeof(data));
+    snrValue = int(LoRa.packetSnr() * 10);
+    rssiValue = int(LoRa.rssi() * 10);
   }
-  
-  snrValue = int(LoRa.packetSnr()*10);
 }

@@ -20,10 +20,11 @@ void setup()
   {
     while (1);
   }
-  LoRa.setTxPower(20);
+  LoRa.setTxPower(19);
   LoRa.enableCrc();
   LoRa.receive();
   LoRa.onReceive(onReceive);
+  LoRa.onTxDone(onTxDone);
 }
 
 void loop()
@@ -32,7 +33,6 @@ void loop()
   {
     sendMessage();
     data.packageNo++;
-    LoRa.onTxDone(onTxDone);
   }
 }
 

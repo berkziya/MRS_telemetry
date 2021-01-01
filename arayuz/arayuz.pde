@@ -47,7 +47,7 @@ void draw() {
     
 }
 
-void pseudoValues(){
+void pseudoValues(){ // Generate some fakeass values.
     timer++;
     pseudoValue1 = noise(timer*0.03, 0);
     pseudoValue2 = noise(timer*0.03, 100);
@@ -62,7 +62,6 @@ void pseudoValues(){
 void drawFins(int coorX, int coorY, int size) {
     PGraphics canvas;
     canvas = createGraphics(size, size);
-
     canvas.beginDraw();
     canvas.background(0);
 
@@ -79,7 +78,6 @@ void drawFins(int coorX, int coorY, int size) {
     indvidualFin(canvas, size/3, 2*size/3, size/3, HALF_PI+QUARTER_PI, fin2);
 
     canvas.endDraw();
-
     image(canvas, coorX, coorY);
 }
 
@@ -104,14 +102,12 @@ void indvidualFin(PGraphics canvas, int coorX, int coorY, int len, float angle, 
 void drawAccel(int coorX, int coorY, int sizeX, int sizeY) {
     PGraphics canvas;
     canvas = createGraphics(sizeX, sizeY);
-
-    int edgeWidth = 30;
-
-    int usableWidth = sizeX-2*edgeWidth;
-    int usableHeight = sizeY-2*edgeWidth;
-
     canvas.beginDraw();
     canvas.background(0);
+
+    int edgeWidth = 30;
+    int usableWidth = sizeX-2*edgeWidth;
+    int usableHeight = sizeY-2*edgeWidth;
 
     canvas.translate(sizeX-edgeWidth, sizeY/2);
 
@@ -133,34 +129,29 @@ void drawAccel(int coorX, int coorY, int sizeX, int sizeY) {
 void drawSequence(int coorX, int coorY, int sizeX, int sizeY) {
     PGraphics canvas;
     canvas = createGraphics(sizeX, sizeY);
-
     canvas.beginDraw();
+    canvas.background(0);
 
     canvas.endDraw();
-
     image(canvas, coorX, coorY);
 }
 
 void drawAltitude(int coorX, int coorY, int sizeX, int sizeY) {
     PGraphics canvas;
     canvas = createGraphics(sizeX, sizeY);
+    canvas.beginDraw();
+    canvas.background(0);
 
     int edgeWidth = 60;
     int lineCount = 30;
     int lineLength = (sizeY-2*edgeWidth)/(lineCount*2);
-    
-    canvas.beginDraw();
-
-    canvas.background(0);
 
     canvas.strokeWeight(2);
     canvas.stroke(255, 255, 255);
-
-    for (int i = 0; i < lineCount+1; i++) {
+    for (int i = 0; i < lineCount+1; i++) { // Draw vertical dashed line
         canvas.line(sizeX/2, edgeWidth+(2*i)*lineLength, sizeX/2, edgeWidth+(2*i+1)*lineLength);
     }
-    
-    canvas.line(0, sizeY-edgeWidth, sizeX, sizeY-edgeWidth);
+    canvas.line(0, sizeY-edgeWidth, sizeX, sizeY-edgeWidth); // Draw horizontal line
 
     canvas.noStroke();
     canvas.fill(255, 0, 255);
@@ -176,19 +167,15 @@ void drawAltitude(int coorX, int coorY, int sizeX, int sizeY) {
     canvas.text("10,000ft", sizeX/2, edgeWidth/2);
 
     canvas.endDraw();
-
     image(canvas, coorX, coorY);
 }
 
 // void drawAB123(int coorX, int coorY, int sizeX, int sizeY) {
 //     PGraphics canvas;
 //     canvas = createGraphics(sizeX, sizeY);
-
 //     canvas.beginDraw();
-
 //     canvas.background(0);
 
 //     canvas.endDraw();
-
 //     image(canvas, coorX, coorY);
 // }

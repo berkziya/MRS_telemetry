@@ -21,8 +21,9 @@ void setup()
     while (1);
   }
   LoRa.setTxPower(20);
-  LoRa.onReceive(onReceive);
+  LoRa.enableCrc();
   LoRa.receive();
+  LoRa.onReceive(onReceive);
 }
 
 void loop()

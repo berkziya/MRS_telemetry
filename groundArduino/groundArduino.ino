@@ -26,6 +26,7 @@ void setup()
   {
     while (1);
   }
+  LoRa.enableCrc();
   LoRa.receive();
   LoRa.onReceive(onReceive);
 

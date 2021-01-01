@@ -31,7 +31,7 @@ void loop()
   {
     sendMessage();
     data.packageNo++;
-    LoRa.receive(); // Goes back to receive mode for an abort signal
+    LoRa.onTxDone(onTxDone);
   }
 }
 
@@ -49,13 +49,18 @@ void onReceive(int packageSize)
 
   while (LoRa.available())
   {
-    incoming += (char)LoRa.read();
+    incoming += (char)LoRa.read(); // Note: needs to be async for false alarms but idk
   }
 
   if (incoming == abortCode)
   {
     // Abort sequence
   }
+}
+
+void onTxDone()
+{
+  LoRa.receive(); // goes back to listening for abort signals
 }
 
 // returns true when interval amount of time passed

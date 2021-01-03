@@ -15,16 +15,19 @@ LoRa_Package data;
 
 void setup()
 {
+  Serial.begin(9600);
   // LoRa init.
   if (!LoRa.begin(433E6))
   {
+    Serial.println("ERROR: Sender LoRa failed to begin");
     while (1);
   }
+  Serial.println("Sender LoRa begun");
   LoRa.setTxPower(18);
   LoRa.enableCrc();
-  LoRa.receive();
   LoRa.onReceive(onReceive);
   LoRa.onTxDone(onTxDone);
+  LoRa.receive();
 }
 
 void loop()
@@ -32,31 +35,34 @@ void loop()
   if (runEvery(200))
   {
     sendMessage();
-    data.packageNo++;
   }
 }
 
 void sendMessage()
 {
+  Serial.println("Sending package no: " + String(data.packageNo));
   LoRa.beginPacket();
   LoRa.write((uint8_t *)&data, sizeof(data));
   LoRa.endPacket(true);
+  data.packageNo++;
 }
 
 void onReceive(int packageSize)
 {
-  if (packetSize == 0) return;
+  if (!packageSize) return;
+  Serial.println("Got a package with " + String(packageSize) + "bytes size.");
   String incoming = "";
-
   while (LoRa.available())
   {
-    incoming += (char)LoRa.read(); // Note: needs to be async for false alarms but idk
+    incoming += (char)LoRa.read(); //Note: Not sure if this is async or takes time.
   }
-
   if (incoming == abortCode)
   {
     // Abort sequence
+    Serial.println("Initialising abort sequence");
+    while (1);
   }
+  Serial.println("Got the signal of: " + incoming);
 }
 
 void onTxDone()

@@ -19,10 +19,10 @@ void setup()
   // LoRa init.
   if (!LoRa.begin(433E6))
   {
-    Serial.println("ERROR: Sender LoRa failed to begin");
+    Serial.println("ERROR: LoRa failed to begin");
     while (1);
   }
-  Serial.println("Sender LoRa begun");
+  Serial.println("LoRa begun");
   LoRa.setTxPower(18);
   LoRa.enableCrc();
   LoRa.onReceive(onReceive);
@@ -32,7 +32,7 @@ void setup()
 
 void loop()
 {
-  if (runEvery(200))
+  if (runEvery(500))
   {
     sendMessage();
   }
@@ -50,7 +50,7 @@ void sendMessage()
 void onReceive(int packageSize)
 {
   if (!packageSize) return;
-  Serial.println("Got a package with " + String(packageSize) + "bytes size.");
+  Serial.println("Received a package with " + String(packageSize) + " bytes size");
   String incoming = "";
   while (LoRa.available())
   {
@@ -67,6 +67,7 @@ void onReceive(int packageSize)
 
 void onTxDone()
 {
+  Serial.println("BASAWI");
   LoRa.receive(); // goes back to listening for abort signals
 }
 

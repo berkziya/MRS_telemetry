@@ -5,6 +5,8 @@
 ValueReceiver<1> receiver;
 ValueReceiver<4> sender;
 
+bool isProcessing = 0;
+
 int isAbort = 0;
 int p_packageNo = 0;
 int p_packageSize = 0;
@@ -26,29 +28,36 @@ void setup()
   // LoRa init.
   if (!LoRa.begin(433E6))
   {
+    if (!isProcessing) Serial.println("ERROR: LoRa failed to begin");
     while (1);
   }
+  if (!isProcessing) Serial.println("LoRa begun");
   LoRa.setTxPower(18);
   LoRa.enableCrc();
   LoRa.onReceive(onReceive);
+  LoRa.onTxDone(onTxDone);
   LoRa.receive();
 
   // Processing connection init.
-  receiver.observe(isAbort);
-  sender.observe(p_packageSize);
-  sender.observe(p_packageNo);
-  sender.observe(rssiValue);
-  sender.observe(snrValue);
+  if (isProcessing)
+  {
+    receiver.observe(isAbort);
+    sender.observe(p_packageSize);
+    sender.observe(p_packageNo);
+    sender.observe(rssiValue);
+    sender.observe(snrValue);
+  }
 }
 
 void loop()
 {
-  receiver.sync(); // Processing get values
+  if (isProcessing) receiver.sync(); // Processing get values
 
   if (isAbort == 1) // Abort sequence
   {
     while (1)
     {
+      if (!isProcessing) Serial.println("Sending abort signal!");
       LoRa.beginPacket();
       LoRa.print("abrt");
       LoRa.endPacket();
@@ -56,15 +65,23 @@ void loop()
     }
   }
 
-  sender.sync(); //Processing send values
+  if (isProcessing) sender.sync(); // Processing send values
 }
 
 // When a package is received
 void onReceive(int packageSize)
 {
   if (!packageSize) return;
+  if (!isProcessing) Serial.println("Received a package with " + String(packageSize) + " bytes size");
   p_packageSize = packageSize;
   LoRa.readBytes((uint8_t *)&data, sizeof(data));
   snrValue = int(LoRa.packetSnr());
   rssiValue = int(LoRa.rssi());
+  p_packageNo = data.packageNo;
+  if (!isProcessing) Serial.println("package: " + String(data.packageNo) + " | snr: " + String(snrValue) + " | rssi: " + String(rssiValue));
+}
+
+void onTxDone()
+{
+  if (!isProcessing) Serial.println("BASAWI");
 }

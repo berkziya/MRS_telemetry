@@ -1,6 +1,13 @@
 #include <SPI.h>
 #include <LoRa.h>
 
+// nss 10
+// reset 9
+// dio0 2
+// miso 12
+// mosi 11
+// sck 13
+
 String abortCode = "abrt";
 
 // the package

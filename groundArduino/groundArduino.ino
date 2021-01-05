@@ -2,6 +2,13 @@
 #include <SPI.h>
 #include <LoRa.h>
 
+// nss 10
+// reset 9
+// dio0 2
+// miso 12
+// mosi 11
+// sck 13
+
 ValueReceiver<1> receiver;
 ValueReceiver<4> sender;
 

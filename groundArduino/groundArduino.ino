@@ -12,7 +12,7 @@
 ValueReceiver<1> receiver;
 ValueReceiver<4> sender;
 
-bool isProcessing = 0;
+bool isProcessing = false;
 
 int isAbort = 0;
 int p_packageNo = 0;

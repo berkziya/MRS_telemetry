@@ -31,6 +31,7 @@ LoRa_Package data;
 
 void setup()
 {
+  LoRa.setTxPower(18, PA_OUTPUT_RFO_PIN);
   Serial.begin(9600);
   // LoRa init.
   if (!LoRa.begin(433E6))
@@ -39,7 +40,6 @@ void setup()
     while (1);
   }
   if (!isProcessing) Serial.println("LoRa begun");
-  LoRa.setTxPower(18);
   LoRa.enableCrc();
   LoRa.onReceive(onReceive);
   LoRa.onTxDone(onTxDone);

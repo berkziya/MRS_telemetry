@@ -158,7 +158,7 @@ void drawAltitude(int coorX, int coorY, int sizeX, int sizeY) {
 	canvas.noStroke();
 	canvas.fill(255, 0, 255);
 	
-	canvas.rect(sizeX / 2 - 6, sizeY - edgeWidth - (altitude * (sizeY - 2 * edgeWidth) / 10000) - 20, 12, 20);
+	canvas.rect(sizeX / 2 - 6, sizeY - edgeWidth - (altitude * (sizeY - 2 * edgeWidth) / 10000) - 20, 12, 20); // Draw the rocket
 	
 	canvas.textFont(font);
 	canvas.textSize(16);
@@ -173,7 +173,7 @@ void drawAltitude(int coorX, int coorY, int sizeX, int sizeY) {
 }
 
 void giveAbort() {
-	
+	isAbort = 1;
 }
 
 // void drawAB123(int coorX, int coorY, int sizeX, int sizeY) {

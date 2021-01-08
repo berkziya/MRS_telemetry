@@ -31,7 +31,6 @@ LoRa_Package data;
 
 void setup()
 {
-  LoRa.setTxPower(18, PA_OUTPUT_RFO_PIN);
   Serial.begin(9600);
   // LoRa init.
   if (!LoRa.begin(433E6))
@@ -60,18 +59,16 @@ void loop()
 {
   if (isProcessing) receiver.sync(); // Processing get values
 
-  if (isAbort == 1) // Abort sequence
+  while (isAbort)
   {
-    while (1)
-    {
-      if (!isProcessing) Serial.println("Sending abort signal!");
-      LoRa.beginPacket();
-      LoRa.print("abrt");
-      LoRa.endPacket();
-      delay(100);
-    }
+    if (!isProcessing) Serial.println("Sending abort signal!");
+    LoRa.beginPacket();
+    LoRa.setTxPower(18, PA_OUTPUT_RFO_PIN);
+    LoRa.print("abrt");
+    LoRa.endPacket();
+    delay(100);
   }
-
+  
   if (isProcessing) sender.sync(); // Processing send values
 }
 

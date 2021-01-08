@@ -22,10 +22,8 @@ LoRa_Package data;
 
 void setup()
 {
-  LoRa.setTxPower(18, PA_OUTPUT_RFO_PIN)
   Serial.begin(9600);
-  // LoRa init.
-  if (!LoRa.begin(433E6))
+  if (!LoRa.begin(433E6)) // LoRa init.
   {
     Serial.println("ERROR: LoRa failed to begin");
     while (1);
@@ -49,6 +47,7 @@ void sendMessage()
 {
   Serial.println("Sending package no: " + String(data.packageNo));
   LoRa.beginPacket();
+  LoRa.setTxPower(18, PA_OUTPUT_RFO_PIN)
   LoRa.write((uint8_t *)&data, sizeof(data));
   LoRa.endPacket(true);
   data.packageNo++;
@@ -61,15 +60,14 @@ void onReceive(int packageSize)
   String incoming = "";
   while (LoRa.available())
   {
-    incoming += (char)LoRa.read(); //Note: Not sure if this is async or takes time.
+    incoming += (char)LoRa.read(); // Note: Not sure if this is async or takes time.
   }
-  if (incoming == abortCode)
+  if (incoming == abortCode) // Abort sequence
   {
-    // Abort sequence
     Serial.println("Initialising abort sequence");
-    while (1);
+    Abort();
   }
-  Serial.println("Got the signal of: " + incoming);
+  Serial.println("Got this signal: " + incoming);
 }
 
 void onTxDone()
@@ -78,8 +76,7 @@ void onTxDone()
   LoRa.receive(); // goes back to listening for abort signals
 }
 
-// returns true when interval amount of time passed
-boolean runEvery(unsigned long interval)
+boolean runEvery(unsigned long interval) // returns true when interval amount of time passed
 {
   static unsigned long previousMillis = 0;
   unsigned long currentMillis = millis();
@@ -89,4 +86,9 @@ boolean runEvery(unsigned long interval)
     return true;
   }
   return false;
+}
+
+void Abort() // Abort sequence
+{
+  // while (1);
 }

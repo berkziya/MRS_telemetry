@@ -10,7 +10,7 @@
 
 String abortCode = "abrt";
 
-// the package
+// the package we are sending
 typedef struct
 {
   int16_t packageNo = 0;
@@ -47,7 +47,7 @@ void sendMessage()
 {
   Serial.println("Sending package no: " + String(data.packageNo));
   LoRa.beginPacket();
-  LoRa.setTxPower(18, PA_OUTPUT_RFO_PIN)
+  LoRa.setTxPower(18, PA_OUTPUT_RFO_PIN);
   LoRa.write((uint8_t *)&data, sizeof(data));
   LoRa.endPacket(true);
   data.packageNo++;
@@ -55,18 +55,15 @@ void sendMessage()
 
 void onReceive(int packageSize)
 {
-  if (!packageSize) return;
+  if (!packageSize) return; // Ignore if the package is empty
   Serial.println("Received a package with " + String(packageSize) + " bytes size");
+
   String incoming = "";
   while (LoRa.available())
   {
     incoming += (char)LoRa.read(); // Note: Not sure if this is async or takes time.
   }
-  if (incoming == abortCode) // Abort sequence
-  {
-    Serial.println("Initialising abort sequence");
-    Abort();
-  }
+  if (incoming == abortCode) abort();// We got abort signal
   Serial.println("Got this signal: " + incoming);
 }
 
@@ -74,6 +71,12 @@ void onTxDone()
 {
   Serial.println("BASAWI");
   LoRa.receive(); // goes back to listening for abort signals
+}
+
+void abort() // Abort sequence
+{
+  Serial.println("Initialising abort sequence");
+  // while (1);
 }
 
 boolean runEvery(unsigned long interval) // returns true when interval amount of time passed
@@ -86,9 +89,4 @@ boolean runEvery(unsigned long interval) // returns true when interval amount of
     return true;
   }
   return false;
-}
-
-void Abort() // Abort sequence
-{
-  // while (1);
 }

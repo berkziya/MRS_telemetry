@@ -57,8 +57,7 @@ void setup()
 
 void loop()
 {
-  if (isProcessing)
-    receiver.sync(); // Processing get values
+  if (isProcessing) receiver.sync(); // Processing get values
 
   while (isAbort)
   {
@@ -70,8 +69,7 @@ void loop()
     delay(100);
   }
 
-  if (isProcessing)
-    sender.sync(); // Processing send values
+  if (isProcessing) sender.sync(); // Processing send values
 }
 
 // When a package is received

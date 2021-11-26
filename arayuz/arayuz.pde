@@ -37,7 +37,7 @@ void draw() {
 	
 	// drawAltitude(60, 60, 200, 500);
 	// drawFins(60, 60, 300);
-	// drawAccel(60, 60, 500, 300);
+	drawGraph(accel, 60, 60, 500, 300);
 	// drawSequence(60, 60, 1500, 200);
 	
 	textFont(font);
@@ -57,7 +57,7 @@ void pseudoValues() { // Generate some fakeass values.
 	fin1 = map(pseudoValue1, 0, 1, - 1, 1);
 	fin2 = map(pseudoValue2, 0, 1, - 1, 1);
 	
-	accel = splice(accel, map(pseudoValue1, 0, 1, - 1, 1), accel.length);
+	accel = append(accel, map(pseudoValue1, 0, 1, - 1, 1));
 	altitude += pseudoValue1 * 100;
 }
 
@@ -101,7 +101,7 @@ void indvidualFin(PGraphics canvas, int coorX, int coorY, int len, float angle, 
 	canvas.endShape(CLOSE);
 }
 
-void drawAccel(int coorX, int coorY, int sizeX, int sizeY) {
+void drawGraph(float data[], int coorX, int coorY, int sizeX, int sizeY) {
 	PGraphics canvas;
 	canvas = createGraphics(sizeX, sizeY);
 	canvas.beginDraw();
@@ -118,8 +118,8 @@ void drawAccel(int coorX, int coorY, int sizeX, int sizeY) {
 	canvas.strokeWeight(2);
 	canvas.beginShape();
 	
-	for (int i = max(accel.length - usableWidth, 1); i < accel.length; i++) {
-	    canvas.vertex(i - accel.length, map(accel[i], - 1, 1, - usableHeight / 2, usableHeight / 2));
+	for (int i = max(data.length - usableWidth, 1); i < data.length; i++) {
+	    canvas.vertex(i - data.length, map(data[i], - 1, 1, - usableHeight / 2, usableHeight / 2));
 	}
 	
 	canvas.endShape();

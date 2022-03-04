@@ -1,12 +1,12 @@
 #include <SPI.h>
 #include <LoRa.h>
 
+// sck 13
+// miso 12
+// mosi 11
 // nss 10
 // reset 9
 // dio0 2
-// miso 12
-// mosi 11
-// sck 13
 
 String abortCode = "abrt";
 
@@ -47,7 +47,7 @@ void sendMessage()
 {
   Serial.println("Sending package no: " + String(data.packageNo));
   LoRa.beginPacket();
-  LoRa.setTxPower(18, PA_OUTPUT_RFO_PIN);
+  LoRa.setTxPower(20, PA_OUTPUT_RFO_PIN);
   LoRa.write((uint8_t *)&data, sizeof(data));
   LoRa.endPacket(true);
   data.packageNo++;

@@ -2,12 +2,12 @@
 #include <SPI.h>
 #include <LoRa.h>
 
+// sck 13
+// miso 12
+// mosi 11
 // nss 10
 // reset 9
 // dio0 2
-// miso 12
-// mosi 11
-// sck 13
 
 ValueReceiver<1> receiver;
 ValueReceiver<4> sender;
@@ -63,7 +63,7 @@ void loop()
   {
     if (!isProcessing) Serial.println("Sending abort signal!");
     LoRa.beginPacket();
-    LoRa.setTxPower(18, PA_OUTPUT_RFO_PIN);
+    LoRa.setTxPower(20, PA_OUTPUT_RFO_PIN);
     LoRa.print("abrt");
     LoRa.endPacket();
     delay(100);

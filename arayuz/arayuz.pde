@@ -22,11 +22,11 @@ int snrValue = 0, rssiValue = 0;
 
 void setup() {
 	size(800, 800);
-	font = createFont("RobotoMono-Regular.ttf", 32);
+	// font = createFont("RobotoMono-Regular.ttf", 32);
 	
 	// This part communicates with the arduino
-	Serial serial = new Serial(this, "!!INSERT PORT HERE!!", 9600);
-	sender = new ValueSender(this, serial).observe("isAbort");
+	Serial serial = new Serial(this, "COM3", 9600);
+	// sender = new ValueSender(this, serial).observe("isAbort");
 	receiver = new ValueReceiver(this, serial).observe("packageSize").observe("packageNo").observe("rssiValue").observe("snrValue");
 }
 
@@ -40,13 +40,20 @@ void draw() {
 	drawGraph(accel, 60, 60, 500, 300);
 	// drawSequence(60, 60, 1500, 200);
 	
-	textFont(font);
+	// textFont(font);
 	textSize(16);
 	text("packageNo: " + packageNo, 5, 30);
 	text("packageSize: " + snrValue, 5, 60);
 	text("rssiValue: " + rssiValue, 5, 90);
 	text("snrValue: " + snrValue, 5, 120);
-	
+  text("isAbort: " + isAbort, 5, 150);
+  
+}
+
+void keyPressed() {
+  if (key == BACKSPACE) {
+    giveAbort();
+  }
 }
 
 void pseudoValues() { // Generate some fakeass values.

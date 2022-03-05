@@ -9,7 +9,7 @@
 // reset 9
 // dio0 2
 
-ValueReceiver<1> receiver;
+// ValueReceiver<1> receiver;
 ValueReceiver<4> sender;
 
 bool isProcessing = false;
@@ -17,14 +17,14 @@ bool isProcessing = false;
 int isAbort = 0;
 int p_packageNo = 0;
 int p_packageSize = 0;
-int snrValue = 0, rssiValue = 0;
+int snrValue = 0;
+int rssiValue = 0;
 
 // the package
 typedef struct
 {
-  int16_t packageNo;
-  float randomBullshitGo;
-  String mamma;
+  int8_t packageNo;
+  int16_t randomBullshitGo;
 } LoRa_Package;
 
 LoRa_Package data;
@@ -39,7 +39,7 @@ void setup()
     while (1);
   }
   if (!isProcessing) Serial.println("LoRa begun");
-  LoRa.enableCrc();
+  // LoRa.enableCrc();
   LoRa.onReceive(onReceive);
   LoRa.onTxDone(onTxDone);
   LoRa.receive();
@@ -47,7 +47,7 @@ void setup()
   // Processing connection init.
   if (isProcessing)
   {
-    receiver.observe(isAbort);
+    // receiver.observe(isAbort);
     sender.observe(p_packageSize);
     sender.observe(p_packageNo);
     sender.observe(rssiValue);
@@ -57,22 +57,21 @@ void setup()
 
 void loop()
 {
-  if (isProcessing) receiver.sync(); // Processing get values
+  // if (isProcessing) receiver.sync();  // Processing get values
 
   while (isAbort)
   {
     if (!isProcessing) Serial.println("Sending abort signal!");
+    LoRa.setTxPower(19);
     LoRa.beginPacket();
-    LoRa.setTxPower(20, PA_OUTPUT_RFO_PIN);
     LoRa.print("abrt");
     LoRa.endPacket();
-    delay(100);
+    delay(200);
   }
 
-  if (isProcessing) sender.sync(); // Processing send values
+  if (isProcessing) sender.sync();  // Processing send values
 }
 
-// When a package is received
 void onReceive(int packageSize)
 {
   if (!packageSize) return;
@@ -83,9 +82,10 @@ void onReceive(int packageSize)
   rssiValue = int(LoRa.rssi());
   p_packageNo = data.packageNo;
   if (!isProcessing) Serial.println("package: " + String(data.packageNo) + " | snr: " + String(snrValue) + " | rssi: " + String(rssiValue));
+  if (!isProcessing) Serial.println("message: " + String(data.randomBullshitGo));
 }
 
 void onTxDone()
 {
-  if (!isProcessing) Serial.println("BASAWI");
+  if (!isProcessing) Serial.println("TRANSMISSION DONE");
 }

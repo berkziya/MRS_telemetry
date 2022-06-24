@@ -11,10 +11,11 @@
 // the package we are sending
 typedef struct
 {
+  char buffer[40];
   unsigned int packageNo = 0;
-  unsigned int randomBullshitGo0 = 99;  // 0 to 65,535
-  unsigned int randomBullshitGo1 = 33;
-  unsigned int randomBullshitGo2 = 66;
+  // unsigned int randomBullshitGo0 = 99;  // 0 to 65,535
+  // unsigned int randomBullshitGo1 = 33;
+  // unsigned int randomBullshitGo2 = 66;
 } LoRa_Package;
 
 LoRa_Package sent;
@@ -32,22 +33,22 @@ void setup()
   // LoRa.enableCrc();
   LoRa.onReceive(onReceive);
   LoRa.onTxDone(onTxDone);
-  LoRa.receive();
 }
 
 void loop()
 {
-  if (runEvery(600   + random(-50, 50)))
-  {
-    sendMessage();
-  }
+  sendMessage();
+  // if (runEvery(600   + random(-50, 50)))
+  // {
+  //   sendMessage();
+  // }
 }
 
 void sendMessage()
 {
-  Serial.println("Sending package no: " + String(sent.packageNo));
+  // Serial.println("Sending package no: " + String(sent.packageNo));
   LoRa.beginPacket();
-  LoRa.setTxPower(21);
+  LoRa.setTxPower(20);
   LoRa.write((uint8_t *)&sent, sizeof(sent));
   LoRa.endPacket(true);
   sent.packageNo++;
@@ -58,14 +59,16 @@ void onReceive(int packageSize)
   if (!packageSize) return;
   // Serial.println("                   Received a package with " + String(packageSize) + " bytes size");
   LoRa.readBytes((uint8_t *)&data, sizeof(data));
-  Serial.println("                   package: " + String(data.packageNo) + " | snr: " + String(LoRa.packetSnr()) + " | rssi: " + String(LoRa.rssi()));
-  Serial.println("                   message: " + String(data.randomBullshitGo0) + " | " + String(data.randomBullshitGo1) + " | " + String(data.randomBullshitGo2));
+  // Serial.println("                   package: " + String(data.packageNo) + " | snr: " + String(LoRa.packetSnr()) + " | rssi: " + String(LoRa.rssi()));
+  // Serial.println("                   message: " + String(data.randomBullshitGo0) + " | " + String(data.randomBullshitGo1) + " | " + String(data.randomBullshitGo2));
 }
 
 void onTxDone()
 {
   // Serial.println("TRANSMISSION DONE");
-  LoRa.receive();  // goes back to listening for incoming signals
+  sprintf(sent.buffer, "abc %d", sent.packageNo);
+  delay(40);
+  sendMessage();
 }
 
 boolean runEvery(unsigned long interval)  // returns true when interval amount of time passed
